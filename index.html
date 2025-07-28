@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIDI Color Presets</title>
+    <link rel="stylesheet" href="src/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Load MIDI Preset from Image</h1>
+      <p>Upload your preset image, or upload something else for a surprise!</p>
+
+      <div class="upload-section">
+        <input type="file" id="imageInput" accept="image/*" />
+        <label for="imageInput" class="upload-button">Choose Image</label>
+      </div>
+
+      <div id="imagePreview" class="image-preview hidden">
+        <img id="previewImg" alt="Uploaded image" />
+      </div>
+
+      <div id="result" class="result hidden">
+        <div class="color-display">
+          <div id="colorSwatch" class="color-swatch"></div>
+          <div class="color-info">
+            <p id="hexValue"></p>
+          </div>
+        </div>
+      </div>
+
+      <canvas id="canvas" style="display: none"></canvas>
+    </div>
+
+    <script src="src/main.js"></script>
+  </body>
+</html>
