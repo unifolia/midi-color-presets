@@ -24,6 +24,9 @@ body {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
 }
 
 h1 {
@@ -115,11 +118,11 @@ p {
     color: #213547;
     background-color: #ffffff;
   }
-  
+
   .color-swatch {
     border-color: #ddd;
   }
-  
+
   p {
     color: #666;
   }

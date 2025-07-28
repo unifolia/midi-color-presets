@@ -35,27 +35,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
       let totalR = 0,
         totalG = 0,
-        totalB = 0;
+        totalB = 0,
+        totalA = 0;
       let pixelCount = 0;
 
       for (let i = 0; i < data.length; i += 4) {
         totalR += data[i];
         totalG += data[i + 1];
         totalB += data[i + 2];
+        totalA += data[i + 3];
         pixelCount++;
       }
 
       const avgR = Math.round(totalR / pixelCount);
       const avgG = Math.round(totalG / pixelCount);
       const avgB = Math.round(totalB / pixelCount);
+      const avgA = Math.round(totalA / pixelCount);
 
-      const hexColor = rgbToHex(avgR, avgG, avgB);
-
-      colorSwatch.style.backgroundColor = `rgb(${avgR}, ${avgG}, ${avgB})`;
+      colorSwatch.style.backgroundColor = `rgba(${avgR}, ${avgG}, ${avgB}, ${avgA})`;
       hexValue.textContent = `MIDI Values:
         ${rgbToMidi(avgR)}, 
         ${rgbToMidi(avgG)}, 
-        ${rgbToMidi(avgB)}`;
+        ${rgbToMidi(avgB)},
+        ${rgbToMidi(avgA)}`;
 
       result.classList.remove("hidden");
     };
