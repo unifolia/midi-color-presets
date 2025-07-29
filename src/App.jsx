@@ -1,55 +1,57 @@
 import React, { useEffect, useState, useRef } from "react";
 
-function App() {
-  const [previewImage, setPreviewImage] = useState(null);
-  const [averageColor, setAverageColor] = useState(null);
-  const [midiValues, setMidiValues] = useState(null);
+const App = () => {
   const canvasRef = useRef(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [RGB, setRGB] = useState({
+    r: 100,
+    g: 255,
+    b: 100,
+  });
+
+  const rgbToMidi = (rgb) => Math.round(rgb * (127 / 255));
+  const midiToRgb = (midi) => Math.round(midi * (255 / 127));
+
+  const updateColorsViaMidi = (note, velocity) => {
+    switch (note) {
+      case 1:
+        setRGB((prevRGB) => ({ ...prevRGB, r: midiToRgb(velocity) }));
+        break;
+      case 33:
+        setRGB((prevRGB) => ({ ...prevRGB, g: midiToRgb(velocity) }));
+        break;
+      case 21:
+        setRGB((prevRGB) => ({ ...prevRGB, b: midiToRgb(velocity) }));
+        break;
+    }
+  };
+
+  const handleMIDIMessage = (event) => {
+    const [status, data1, data2] = event.data;
+
+    const command = status >> 4;
+    const note = data1;
+    const velocity = data2;
+
+    switch (command) {
+      case 11:
+        updateColorsViaMidi(note, velocity);
+        break;
+      default:
+        console.log(`MIDI Message: ${event.data}`);
+    }
+  };
 
   useEffect(() => {
-    // Request access to the Web MIDI API
-
-    const onMIDISuccess = (midiAccess) => {
-      for (let input of midiAccess.inputs.values()) {
-        input.onmidimessage = handleMIDIMessage;
-      }
-    };
-
-    const onMIDIFailure = () => {
-      console.error("Failed to access MIDI devices.");
-    };
-
-    const handleMIDIMessage = (event) => {
-      const [status, data1, data2] = event.data;
-
-      const command = status >> 4;
-      const channel = status & 0xf;
-      const note = data1;
-      const velocity = data2;
-
-      switch (command) {
-        case 8: // note off
-          console.log(`Note Off: ${note} (Channel ${channel + 1})`);
-          break;
-        case 9: // note on
-          if (velocity === 0) {
-            console.log(`Note Off: ${note} (Channel ${channel + 1})`);
-          } else {
-            console.log(
-              `Note On: ${note} (Velocity: ${velocity}, Channel ${channel + 1})`
-            );
-          }
-          break;
-        case 11: // control change
-          console.log(`Control Change: Controller ${note}, Value ${velocity}`);
-          break;
-        default:
-          console.log(`MIDI Message: ${event.data}`);
-      }
-    };
-
     if (navigator.requestMIDIAccess) {
-      navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+      navigator.requestMIDIAccess().then(
+        (midiAccess) => {
+          for (let input of midiAccess.inputs.values()) {
+            input.onmidimessage = handleMIDIMessage;
+          }
+        },
+        () => console.error("Failed to access MIDI devices.")
+      );
     } else {
       console.error("MIDI is not supported on this browser :(");
     }
@@ -61,13 +63,13 @@ function App() {
       const reader = new FileReader();
       reader.onload = (e) => {
         setPreviewImage(e.target.result);
-        calculateAverageColor(e.target.result);
+        calculateRGB(e.target.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const calculateAverageColor = (imageSrc) => {
+  const calculateRGB = (imageSrc) => {
     const img = new Image();
     img.onload = () => {
       const canvas = canvasRef.current;
@@ -83,38 +85,24 @@ function App() {
 
       let totalR = 0,
         totalG = 0,
-        totalB = 0,
-        totalA = 0;
+        totalB = 0;
       let pixelCount = 0;
 
       for (let i = 0; i < data.length; i += 4) {
         totalR += data[i];
         totalG += data[i + 1];
         totalB += data[i + 2];
-        totalA += data[i + 3];
         pixelCount++;
       }
 
       const avgR = Math.round(totalR / pixelCount);
       const avgG = Math.round(totalG / pixelCount);
       const avgB = Math.round(totalB / pixelCount);
-      const avgA = Math.round(totalA / pixelCount);
 
-      const color = { r: avgR, g: avgG, b: avgB, a: avgA };
-      setAverageColor(color);
-
-      const midi = {
-        r: rgbToMidi(avgR),
-        g: rgbToMidi(avgG),
-        b: rgbToMidi(avgB),
-        a: rgbToMidi(avgA),
-      };
-      setMidiValues(midi);
+      setRGB({ r: avgR, g: avgG, b: avgB });
     };
     img.src = imageSrc;
   };
-
-  const rgbToMidi = (rgb) => Math.round(rgb * (127 / 255));
 
   const handleMidiUpload = async () => {
     try {
@@ -126,28 +114,50 @@ function App() {
         return;
       }
 
-      // const output = outputs[0];
+      const output = outputs[0];
 
-      // const placeholderData = [
-      //   [0x90, 60, 100],
-      //   [0x90, 64, 100],
-      //   [0x90, 67, 100],
-      //   [0x80, 60, 0],
-      //   [0x80, 64, 0],
-      //   [0x80, 67, 0],
-      // ];
+      const placeholderData = [
+        [0xb0 + 4, 1, rgbToMidi(RGB.r)],
+        [0xb0 + 4, 33, rgbToMidi(RGB.g)],
+        [0xb0 + 4, 21, rgbToMidi(RGB.b)],
+      ];
 
-      // placeholderData.forEach((message, index) => {
-      //   setTimeout(() => {
-      //     output.send(message);
-      //   }, index * 200);
-      // });
-
-      alert(averageColor);
+      placeholderData.forEach((message, index) => {
+        output.send(message);
+      });
     } catch (error) {
       console.error("MIDI Error:", error);
       alert("MIDI not supported or access denied");
     }
+  };
+
+  const handleSnapshot = () => {
+    const colorSwatchElement = document.querySelector(".color-swatch");
+    if (!colorSwatchElement) {
+      alert("Color swatch not found");
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const rect = colorSwatchElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+
+    ctx.fillStyle = `rgb(${RGB.r}, ${RGB.g}, ${RGB.b})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = `color-swatch-${RGB.r}-${RGB.g}-${RGB.b}.png`;
+      link.href = url;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, "image/png");
   };
 
   return (
@@ -167,25 +177,32 @@ function App() {
         </label>
       </div>
 
-      {previewImage && (
+      {previewImage ? (
         <div className="image-preview">
           <img src={previewImage} alt="Uploaded image" />
         </div>
+      ) : (
+        <div
+          className="color-preview"
+          style={{
+            backgroundColor: `rgba(${RGB.r}, ${RGB.g}, ${RGB.b})`,
+          }}
+        ></div>
       )}
 
-      {averageColor && midiValues && (
+      {RGB && (
         <div className="result">
           <div className="color-display">
             <div
               className="color-swatch"
               style={{
-                backgroundColor: `rgba(${averageColor.r}, ${averageColor.g}, ${averageColor.b}, ${averageColor.a})`,
+                backgroundColor: `rgba(${RGB.r}, ${RGB.g}, ${RGB.b})`,
               }}
             ></div>
             <div className="color-info">
               <p>
-                MIDI Values:
-                {midiValues.r},{midiValues.g},{midiValues.b},{midiValues.a}
+                MIDI Values: {rgbToMidi(RGB.r)}, {rgbToMidi(RGB.g)},{" "}
+                {rgbToMidi(RGB.b)}
               </p>
             </div>
           </div>
@@ -195,12 +212,15 @@ function App() {
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
 
       <div className="upload-section">
+        <button className="upload-button" onClick={handleSnapshot}>
+          Save Preset
+        </button>
         <button className="upload-button" onClick={handleMidiUpload}>
-          Upload
+          Upload Preset to Device
         </button>
       </div>
     </div>
   );
-}
+};
 
 export default App;

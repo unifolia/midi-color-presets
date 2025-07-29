@@ -44,6 +44,9 @@ p {
 .upload-section {
   margin-bottom: 2em;
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  min-width: 400px;
 }
 
 #imageInput {
@@ -67,8 +70,18 @@ p {
   background-color: #535bf2;
 }
 
-.image-preview {
+.image-preview,
+.color-preview {
   margin-bottom: 2em;
+  max-height: 300px;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.color-preview {
+  height: 300px;
+  width: 300px;
 }
 
 .image-preview img {
@@ -83,7 +96,7 @@ p {
 }
 
 .result {
-  margin-top: 2em;
+  margin: 0 0 2rem 0;
 }
 
 .color-display {
@@ -91,7 +104,6 @@ p {
   align-items: center;
   justify-content: center;
   gap: 2em;
-  margin-top: 1em;
   flex-wrap: wrap;
 }
 
