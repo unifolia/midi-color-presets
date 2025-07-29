@@ -116,13 +116,13 @@ const App = () => {
 
       const output = outputs[0];
 
-      const placeholderData = [
+      const midiData = [
         [0xb0 + 4, 1, rgbToMidi(RGB.r)],
         [0xb0 + 4, 33, rgbToMidi(RGB.g)],
         [0xb0 + 4, 21, rgbToMidi(RGB.b)],
       ];
 
-      placeholderData.forEach((message, index) => {
+      midiData.forEach((message, index) => {
         output.send(message);
       });
     } catch (error) {
@@ -216,7 +216,7 @@ const App = () => {
           Save Preset
         </button>
         <button className="upload-button" onClick={handleMidiUpload}>
-          Upload Preset to Device
+          Upload to Device
         </button>
       </div>
     </div>
