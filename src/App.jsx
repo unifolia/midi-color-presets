@@ -4,9 +4,9 @@ const App = () => {
   const canvasRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [RGB, setRGB] = useState({
-    r: 100,
-    g: 255,
-    b: 100,
+    r: 90,
+    g: 180,
+    b: 160,
   });
 
   const rgbToMidi = (rgb) => Math.round(rgb * (127 / 255));
@@ -74,7 +74,6 @@ const App = () => {
     img.onload = () => {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
-
       canvas.width = img.width;
       canvas.height = img.height;
 
@@ -151,7 +150,7 @@ const App = () => {
     canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.download = `color-swatch-${RGB.r}-${RGB.g}-${RGB.b}.png`;
+      link.download = `meris-preset-mix${RGB.r}-decay${RGB.g}-mod${RGB.b}.png`;
       link.href = url;
       document.body.appendChild(link);
       link.click();
@@ -162,8 +161,11 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1>Load MIDI Preset from Image</h1>
-      <p>Upload your preset image, or upload something else for a surprise!</p>
+      <h1>MIDI // Colours</h1>
+      <p>
+        Convert colours to MIDI and vice-versa. Create, save, and upload
+        presets.
+      </p>
 
       <div className="upload-section">
         <input
@@ -171,15 +173,22 @@ const App = () => {
           id="imageInput"
           accept="image/*"
           onChange={handleImageUpload}
+          value=""
         />
         <label htmlFor="imageInput" className="upload-button">
-          Choose Image
+          Upload
         </label>
       </div>
 
       {previewImage ? (
         <div className="image-preview">
           <img src={previewImage} alt="Uploaded image" />
+          <button
+            className="delete-image"
+            onClick={() => setPreviewImage(null)}
+          >
+            Delete Image
+          </button>
         </div>
       ) : (
         <div
@@ -216,7 +225,7 @@ const App = () => {
           Save Preset
         </button>
         <button className="upload-button" onClick={handleMidiUpload}>
-          Upload to Device
+          Send to Device
         </button>
       </div>
     </div>
