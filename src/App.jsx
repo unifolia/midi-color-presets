@@ -74,7 +74,6 @@ const App = () => {
     img.onload = () => {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
-
       canvas.width = img.width;
       canvas.height = img.height;
 
@@ -180,6 +179,15 @@ const App = () => {
       {previewImage ? (
         <div className="image-preview">
           <img src={previewImage} alt="Uploaded image" />
+          <button
+            className="delete-image"
+            onClick={(e) => {
+              e.preventDefault();
+              setPreviewImage(null);
+            }}
+          >
+            Delete Image
+          </button>
         </div>
       ) : (
         <div
