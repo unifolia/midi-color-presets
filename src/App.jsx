@@ -4,9 +4,9 @@ const App = () => {
   const canvasRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [RGB, setRGB] = useState({
-    r: 233,
-    g: 160,
-    b: 244,
+    r: 90,
+    g: 180,
+    b: 160,
   });
 
   const rgbToMidi = (rgb) => Math.round(rgb * (127 / 255));
@@ -161,8 +161,11 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1>Load MIDI Preset from Image</h1>
-      <p>Upload your preset image, or upload something else for a surprise!</p>
+      <h1>MIDI // Colours</h1>
+      <p>
+        Convert colours to MIDI and vice-versa. Create, save, and upload
+        presets.
+      </p>
 
       <div className="upload-section">
         <input
@@ -173,7 +176,7 @@ const App = () => {
           value=""
         />
         <label htmlFor="imageInput" className="upload-button">
-          Choose Image
+          Upload
         </label>
       </div>
 
@@ -222,7 +225,7 @@ const App = () => {
           Save Preset
         </button>
         <button className="upload-button" onClick={handleMidiUpload}>
-          Upload to Device
+          Send to Device
         </button>
       </div>
     </div>

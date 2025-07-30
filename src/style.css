@@ -4,11 +4,12 @@
   font-weight: 400;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #333333;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --theme-color: #3a71e7;
 }
 
 #root {
@@ -31,18 +32,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
 
-h1 {
-  font-size: 2.5em;
-  line-height: 1.1;
-  margin-bottom: 0.5em;
-  color: #646cff;
-}
+  h1 {
+    font-size: 5em;
+    line-height: 1.1;
+    margin-bottom: 0.275em;
+    color: var(--theme-color);
+  }
 
-p {
-  margin-bottom: 2em;
-  color: #888;
+  p {
+    margin-bottom: 2em;
+    color: #d0d0d0;
+  }
 }
 
 .upload-section {
@@ -52,16 +53,16 @@ p {
   justify-content: space-evenly;
   width: 100%;
   min-width: 360px;
-}
 
-#imageInput {
-  display: none;
+  #imageInput {
+    display: none;
+  }
 }
 
 .upload-button {
   display: inline-block;
   padding: 12px 24px;
-  background-color: #646cff;
+  background-color: var(--theme-color);
   color: white;
   border-radius: 8px;
   cursor: pointer;
@@ -69,10 +70,10 @@ p {
   font-weight: 500;
   transition: background-color 0.25s;
   border: none;
-}
 
-.upload-button:hover {
-  background-color: #535bf2;
+  &:hover {
+    background-color: #535bf2;
+  }
 }
 
 .image-preview,
@@ -80,9 +81,9 @@ p {
   margin-bottom: 2em;
   max-height: none;
   width: auto;
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  outline: 3.5px solid #646cff;
+  outline: 3.5px solid var(--theme-color);
   outline-offset: -3.5px;
   border: none;
 }
@@ -92,32 +93,33 @@ p {
   width: 300px;
 }
 
-.image-preview img {
-  width: 300px;
-  max-height: none;
-  border-radius: 8px;
-  box-shadow: none;
-}
-
 .image-preview {
   position: relative;
   display: flex;
-}
 
-.delete-image {
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  height: 50px;
-  width: 100px;
-  cursor: pointer;
-  background: white;
-  border-style: none;
-  border: 2px solid #242424;
-  border-radius: 8px;
-  color: #242424;
-  &:hover {
-    background: #e1e1e1;
+  img {
+    width: 300px;
+    max-height: none;
+    border-radius: 16px;
+    box-shadow: none;
+  }
+
+  .delete-image {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    height: 30px;
+    width: 100px;
+    cursor: pointer;
+    background: #ffffff9e;
+    border-style: none;
+    border: 2px solid #242424;
+    border-radius: 8px;
+    color: #242424;
+
+    &:hover {
+      background: #e1e1e1;
+    }
   }
 }
 
@@ -147,12 +149,12 @@ p {
 
 .color-info {
   text-align: left;
-}
 
-.color-info p {
-  margin: 0.5em 0;
-  font-family: monospace;
-  font-size: 1.1em;
+  p {
+    margin: 0.5em 0;
+    font-family: monospace;
+    font-size: 1.1em;
+  }
 }
 
 @media (prefers-color-scheme: light) {
