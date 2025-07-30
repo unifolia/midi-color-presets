@@ -4,9 +4,9 @@ const App = () => {
   const canvasRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [RGB, setRGB] = useState({
-    r: 90,
-    g: 180,
-    b: 160,
+    r: 26,
+    g: 161,
+    b: 127,
   });
 
   const rgbToMidi = (rgb) => Math.round(rgb * (127 / 255));
@@ -97,7 +97,6 @@ const App = () => {
       const avgR = Math.round(totalR / pixelCount);
       const avgG = Math.round(totalG / pixelCount);
       const avgB = Math.round(totalB / pixelCount);
-
       setRGB({ r: avgR, g: avgG, b: avgB });
     };
     img.src = imageSrc;
