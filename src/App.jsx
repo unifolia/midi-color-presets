@@ -4,9 +4,9 @@ const App = () => {
   const canvasRef = useRef(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [RGB, setRGB] = useState({
-    r: 100,
-    g: 255,
-    b: 100,
+    r: 233,
+    g: 160,
+    b: 244,
   });
 
   const rgbToMidi = (rgb) => Math.round(rgb * (127 / 255));
@@ -150,7 +150,7 @@ const App = () => {
     canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.download = `color-swatch-${RGB.r}-${RGB.g}-${RGB.b}.png`;
+      link.download = `meris-preset-mix${RGB.r}-decay${RGB.g}-mod${RGB.b}.png`;
       link.href = url;
       document.body.appendChild(link);
       link.click();
@@ -170,6 +170,7 @@ const App = () => {
           id="imageInput"
           accept="image/*"
           onChange={handleImageUpload}
+          value=""
         />
         <label htmlFor="imageInput" className="upload-button">
           Choose Image
@@ -181,10 +182,7 @@ const App = () => {
           <img src={previewImage} alt="Uploaded image" />
           <button
             className="delete-image"
-            onClick={(e) => {
-              e.preventDefault();
-              setPreviewImage(null);
-            }}
+            onClick={() => setPreviewImage(null)}
           >
             Delete Image
           </button>
